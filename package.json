@@ -2,6 +2,6 @@
   "name": "fiber-company-profile",
   "scripts": {
     "build": "cd ui && npm install && npm run build",
-    "install": "cd ui && npm install"
+    "install": "cd ui && rm -rf ./{node_modules,src,index.html,package.json,index.html,json.config,README.md,vite.config.js}"
   }
 }

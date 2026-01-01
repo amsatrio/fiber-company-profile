@@ -1,29 +1,85 @@
-package api
+package main
 
 import (
+	"bufio"
+	"log"
 	"net/http"
+	"os"
+	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/adaptor"
+	helloworld "io.github.com/fiber-company-profile/app/modules/hello-world"
 )
 
-// Handler is the main entry point of the application. Think of it like the main() method
+// for vercel
 func Handler(w http.ResponseWriter, r *http.Request) {
-	// This is needed to set the proper request path in `*fiber.Ctx`
 	r.RequestURI = r.URL.String()
+
+	initEnvironment()
 
 	handler().ServeHTTP(w, r)
 }
 
-// building the fiber application
+// for local
+func main() {
+	app := fiber.New()
+
+	initEnvironment()
+
+	routes(app)
+
+	log.Fatal(app.Listen(":" + os.Getenv("SERVER_PORT")))
+}
+
+func initEnvironment() {
+	err := LoadEnv()
+	if err != nil {
+		log.Fatalf("Error loading .env file: %v", err)
+	}
+}
+
 func handler() http.HandlerFunc {
 	app := fiber.New()
+	routes(app)
+	return adaptor.FiberApp(app)
+}
+
+func routes(app *fiber.App) {
+	app.Static("/", "../ui/dist")
 
 	api := app.Group("/api")
 
-	api.Get("/hello", func(c *fiber.Ctx) error {
-		return c.JSON(fiber.Map{"message": "Hello from Fiber!"})
-	})
+	hello_world_api := api.Group("/hello-world")
+	hello_world_api.Get("", helloworld.HelloWorld)
+}
 
-	return adaptor.FiberApp(app)
+func LoadEnv() error {
+	file, err := os.Open(".env")
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+
+		if len(line) == 0 || strings.HasPrefix(line, "#") {
+			continue
+		}
+
+		parts := strings.SplitN(line, "=", 2)
+		if len(parts) != 2 {
+			continue
+		}
+
+		key := strings.TrimSpace(parts[0])
+		value := strings.TrimSpace(parts[1])
+
+		// Set to System Environment so os.Getenv works
+		os.Setenv(key, value)
+	}
+
+	return scanner.Err()
 }
