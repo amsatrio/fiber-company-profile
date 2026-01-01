@@ -1,3 +1,5 @@
 bin
 http
 .env*
+.vercel
+.env*.local

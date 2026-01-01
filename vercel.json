@@ -1,8 +1,11 @@
 {
-  "rewrites": [
-    {
-      "source": "(.*)",
-      "destination": "main.go"
-    }
-  ]
+    "github": {
+      "silent": true
+    },
+    "rewrites": [
+      {
+        "source": "/(.*)",
+        "destination": "/api/main.go"
+      }
+    ]
 }
