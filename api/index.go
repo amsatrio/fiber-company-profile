@@ -1,15 +1,25 @@
 package api
 
 import (
-	"log"
+	"net/http"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/adaptor"
 )
 
-func main() {
+// Handler is the main entry point of the application. Think of it like the main() method
+func Handler(w http.ResponseWriter, r *http.Request) {
+	// This is needed to set the proper request path in `*fiber.Ctx`
+	r.RequestURI = r.URL.String()
+
+	handler().ServeHTTP(w, r)
+}
+
+// building the fiber application
+func handler() http.HandlerFunc {
 	app := fiber.New()
 
 	app.Static("/", "../ui/dist")
 
-	log.Fatal(app.Listen(":9000"))
+	return adaptor.FiberApp(app)
 }
