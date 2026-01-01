@@ -35,6 +35,12 @@ func routes(app *fiber.App) {
 
 	hello_world_api := api.Group("/hello-world")
 	hello_world_api.Get("", helloworld.HelloWorld)
+
+	app.Get("/config", func(ctx *fiber.Ctx) error {
+		return ctx.JSON(fiber.Map{
+			"SERVER_PORT": os.Getenv("SERVER_PORT"),
+		})
+	})
 }
 
 func LoadEnv() error {
