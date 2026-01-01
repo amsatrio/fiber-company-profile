@@ -19,7 +19,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 func handler() http.HandlerFunc {
 	app := fiber.New()
 
-	app.Static("/", "../ui/dist")
+	api := app.Group("/api")
+
+	api.Get("/hello", func(c *fiber.Ctx) error {
+		return c.JSON(fiber.Map{"message": "Hello from Fiber!"})
+	})
 
 	return adaptor.FiberApp(app)
 }

@@ -1,5 +1,7 @@
 {
-  "dependencies": {
-    "pinia": "^3.0.4"
+  "name": "fiber-company-profile",
+  "scripts": {
+    "build": "cd ui && npm install && npm run build",
+    "install": "cd ui && npm install"
   }
 }
