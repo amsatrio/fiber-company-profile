@@ -2,12 +2,8 @@
   "outputDirectory": "ui/dist",
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "api/index.go"
-    },
-    {
       "source": "/(.*)",
-      "destination": "/index.html"
+      "destination": "api/index.go"
     }
   ]
 }
