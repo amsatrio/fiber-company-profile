@@ -1,24 +1,24 @@
-package handler
+package main
 
 import (
 	"bufio"
 	"log"
-	"net/http"
 	"os"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/adaptor"
 	helloworld "io.github.com/fiber-company-profile/app/modules/hello-world"
 )
 
-// for vercel
-func Handler(w http.ResponseWriter, r *http.Request) {
-	r.RequestURI = r.URL.String()
+// for local
+func main() {
+	app := fiber.New()
 
 	initEnvironment()
 
-	handler().ServeHTTP(w, r)
+	routes(app)
+
+	log.Fatal(app.Listen(":" + os.Getenv("SERVER_PORT")))
 }
 
 func initEnvironment() {
@@ -28,14 +28,8 @@ func initEnvironment() {
 	}
 }
 
-func handler() http.HandlerFunc {
-	app := fiber.New()
-	routes(app)
-	return adaptor.FiberApp(app)
-}
-
 func routes(app *fiber.App) {
-	app.Static("/", "../ui/dist")
+	app.Static("/", "public")
 
 	api := app.Group("/api")
 
