@@ -1,7 +1,11 @@
 build_ui:
+	cd ui && yarn
 	cd ui && yarn build
-build: build_ui
+
+build:
+	mkdir -p bin
 	go build -o bin/app main.go
+
 start: build build_ui
 	rm -rf bin/public
 	mv ui/dist bin/public
